@@ -40,11 +40,15 @@ resource "docker_container" "jenkins_dind" {
   attach = false
   rm = true
   privileged = true
-  network_mode    = docker_network.jenkins.name
+
 
   env = [
     "DOCKER_TLS_CERTDIR=/certs",
   ]
+  
+  networks_advanced {
+  	name = docker_network.jenkins.name
+  }
 
   volumes {
     volume_name = docker_volume.jenkins_data.name
@@ -85,7 +89,6 @@ resource "docker_image" "jenkins_image" {
 resource "docker_container" "jenkins_app" {
   name = "jenkins_app"
   image = docker_image.jenkins_image.image_id
-  network_mode = docker_network.jenkins.name
   restart = "on-failure"
   attach = false
   
@@ -95,6 +98,10 @@ resource "docker_container" "jenkins_app" {
     "DOCKER_TLS_VERIFY=1",
     "JAVA_OPTS=-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true",
   ]
+  
+  networks_advanced {
+  	name = docker_network.jenkins.name
+  }
 
   volumes {
     volume_name = docker_volume.jenkins_data.name
