@@ -95,7 +95,7 @@ resource "docker_container" "jenkins_app" {
   env = [
     "DOCKER_TLS_CERTDIR=/certs",
     "DOCKER_CERT_PATH=/certs/client",
-    "DOCKER_HOST=tcp://127.0.0.1:2376",
+    "DOCKER_HOST=tcp://localhost:2376",
     "DOCKER_TLS_VERIFY=1",
     "JAVA_OPTS=-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true",
   ]
