@@ -110,7 +110,7 @@ resource "docker_container" "jenkins_app" {
 
   volumes {
     volume_name    = docker_volume.jenkins_docker_certs.name
-    container_path = "/certs/client:ro"
+    container_path = "/certs/client"
   }
 
   volumes {
