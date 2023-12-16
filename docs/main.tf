@@ -93,7 +93,7 @@ resource "docker_container" "jenkins_app" {
   attach = false
   
   env = [
-    "DOCKER_TLS_CERTDIR=/certs",
+    "DOCKER_TLS_PATH=/certs/client",
     "DOCKER_HOST=tcp://docker:2376",
     "DOCKER_TLS_VERIFY=1",
     "JAVA_OPTS=-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true",
@@ -110,7 +110,7 @@ resource "docker_container" "jenkins_app" {
   
   volumes {
   	volume_name = docker_volume.jenkins_docker_certs.name
-  	container_path = "/certs/client"
+  	container_path = "/certs/client:ro"
   }
   
   volumes {
