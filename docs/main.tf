@@ -19,7 +19,7 @@ resource "docker_network" "jenkins" {
 
 
 resource "docker_image" "dind" {
-  name = "docker:dind"
+  name         = "docker:dind"
   keep_locally = false
 }
 
@@ -37,28 +37,28 @@ resource "docker_container" "jenkins_dind" {
   name  = "jenkins-docker"
   image = docker_image.dind.image_id
 
-  attach = false
-  rm = true
+  attach     = false
+  rm         = true
   privileged = true
 
 
   env = [
     "DOCKER_TLS_CERTDIR=/certs",
   ]
-  
+
   networks_advanced {
-  	name = docker_network.jenkins.name
+    name = docker_network.jenkins.name
   }
 
   volumes {
-    volume_name = docker_volume.jenkins_data.name
+    volume_name    = docker_volume.jenkins_data.name
     container_path = "/var/jenkins_home"
   }
-  
+
   volumes {
-  	volume_name = docker_volume.jenkins_docker_certs.name
-  	container_path = "/certs/client"
-  }	
+    volume_name    = docker_volume.jenkins_docker_certs.name
+    container_path = "/certs/client"
+  }
 
   ports {
     internal = 2376
@@ -82,47 +82,47 @@ resource "docker_container" "jenkins_dind" {
 # Image
 
 resource "docker_image" "jenkins_image" {
-  name = "myjenkins:latest"
+  name         = "myjenkins:latest"
   keep_locally = false
 }
 
 resource "docker_container" "jenkins_app" {
-  name = "jenkins_app"
-  image = docker_image.jenkins_image.image_id
+  name    = "jenkins_app"
+  image   = docker_image.jenkins_image.image_id
   restart = "on-failure"
-  attach = false
-  
+  attach  = false
+
   env = [
-    "DOCKER_TLS_PATH=/certs/client",
+    "DOCKER_CERT_PATH=/certs/client",
     "DOCKER_HOST=tcp://docker:2376",
     "DOCKER_TLS_VERIFY=1",
     "JAVA_OPTS=-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true",
   ]
-  
+
   networks_advanced {
-  	name = docker_network.jenkins.name
+    name = docker_network.jenkins.name
   }
 
   volumes {
-    volume_name = docker_volume.jenkins_data.name
+    volume_name    = docker_volume.jenkins_data.name
     container_path = "/var/jenkins_home"
   }
-  
+
   volumes {
-  	volume_name = docker_volume.jenkins_docker_certs.name
-  	container_path = "/certs/client:ro"
+    volume_name    = docker_volume.jenkins_docker_certs.name
+    container_path = "/certs/client:ro"
   }
-  
+
   volumes {
-    volume_name = "home-jenkins"
+    volume_name    = "home-jenkins"
     container_path = "/home"
   }
-  
+
   ports {
-  	internal = 8080
-  	external = 8080
+    internal = 8080
+    external = 8080
   }
-  
+
   ports {
     internal = 50000
     external = 50000
