@@ -78,13 +78,13 @@ resource "docker_container" "jenkins_dind" {
 # Image
 
 resource "docker_image" "jenkins_image" {
-  name = "myjenkins"
+  name = "myjenkins:latest"
   keep_locally = false
 }
 
 resource "docker_container" "jenkins_app" {
   name = "jenkins_app"
-  image = docker_image.jenkins_image.name
+  image = docker_image.jenkins_image.image_id
   network_mode = docker_network.jenkins.name
   restart = "on-failure"
   attach = false
